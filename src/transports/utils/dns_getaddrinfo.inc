@@ -89,9 +89,11 @@ void nn_dns_start (struct nn_dns *self, const char *addr, size_t addrlen,
 
     /*  The name is not a literal. Let's do an actual DNS lookup. */
     memset (&query, 0, sizeof (query));
-    if (ipv4only)
+    if (ipv4only) {
+        printf("nn_dns_start(ipv4only:true) AF_INET (ipv4)\n");
         query.ai_family = AF_INET;
-    else {
+      } else {
+        printf("nn_dns_start(ipv4only:false) AF_INET6 (ipv6)\n");
         query.ai_family = AF_INET6;
 #ifdef AI_V4MAPPED
         query.ai_flags = AI_V4MAPPED;

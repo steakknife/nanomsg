@@ -356,10 +356,12 @@ static int nn_btcp_listen (struct nn_btcp *self)
     /*  Combine the port and the address. */
     switch (ss.ss_family) {
     case AF_INET:
+	    printf("btcp: AF_INET (ipv4)\n");
         ((struct sockaddr_in*) &ss)->sin_port = htons (port);
         sslen = sizeof (struct sockaddr_in);
         break;
     case AF_INET6:
+	    printf("btcp: AF_INET6 (ipv6)\n");
         ((struct sockaddr_in6*) &ss)->sin6_port = htons (port);
         sslen = sizeof (struct sockaddr_in6);
         break;

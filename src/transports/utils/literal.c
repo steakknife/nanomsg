@@ -67,6 +67,18 @@ static int nn_inet_pton(int family, const char *src, void *dst)
 
 static int nn_inet_pton(int family, const char *src, void *dst)
 {
+	char *family_str;
+	switch (family) {
+	case AF_INET:
+		family_str = "AF_INET (ipv4)";
+		break;
+	case AF_INET6:
+		family_str = "AF_INET6 (ipv6)";
+		break;
+	default:
+		family_str = "(unknown)";
+	}
+	printf("nn_inet_pton(family:%s, src:%s, dst)\n", family_str, src);
     return inet_pton (family, src, dst);
 }
 
@@ -85,19 +97,27 @@ int nn_literal_resolve (const char *addr, size_t addrlen,
         the address is larger than longest possible literal, skip the step.
         If the literal in enclosed in square brackets ignore them. */
     if (addrlen > 0 && addr [0] == '[') {
-        if (addr [addrlen - 1] != ']')
+        if (addr [addrlen - 1] != ']') {
+	    printf("nn_literal_resolve() EINVAL 0\n");
             return -EINVAL;
-        if (addrlen - 2 + 1 > sizeof (addrz))
+	}
+        if (addrlen - 2 + 1 > sizeof (addrz)) {
+	    printf("nn_literal_resolve() EINVAL 1\n");
             return -EINVAL;
+	}
         memcpy (addrz, addr + 1, addrlen - 2);
         addrz [addrlen - 2] = 0;
     }
     else {
-        if (addrlen + 1 > sizeof (addrz))
+        if (addrlen + 1 > sizeof (addrz)) {
+	    printf("nn_literal_resolve() EINVAL 2\n");
             return -EINVAL;
+	}
         memcpy (addrz, addr, addrlen);
         addrz [addrlen] = 0;
     }
+
+    printf("nn_literal_resolve(addr:%s, addrlen%zd, ipv4only:%s, ...)\n", addrz, addrlen, ipv4only?"true":"false");
 
     /*  Try to interpret the literal as an IPv6 address. */
     if (!ipv4only) {
@@ -128,6 +148,8 @@ int nn_literal_resolve (const char *addr, size_t addrlen,
     errno_assert (rc == 0);
 
     /*  The supplied string is not a valid literal address. */
+    printf("nn_literal_resolve(addr:%s, addrlen%zd, ipv4only:%s, ...) EINVAL last\n", addrz, addrlen, ipv4only?"true":"false");
+
     return -EINVAL;
 }
 

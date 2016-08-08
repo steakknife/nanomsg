@@ -46,13 +46,18 @@ int nn_iface_resolve (const char *addr, size_t addrlen, int ipv4only,
 {
     int rc;
 
+	printf("nn_iface_resolve(addr:%*s, addrlen:%zd, ipv4only:%s)\n", (int)addrlen, addr, addrlen, ipv4only ? "true":"false");
+
     /*  Asterisk is a special name meaning "all interfaces". */
     if (addrlen == 1 && addr [0] == '*') {
+	printf("nn_iface_resolve(addr:%*s, addrlen:%zd, ipv4only:%s) -> all interfaces\n", (int)addrlen, addr, addrlen, ipv4only ? "true":"false");
         nn_iface_any (ipv4only, result, resultlen);
         return 0;
     }
 
+	printf("nn_iface_resolve(addr:%*s, addrlen:%zd, ipv4only:%s) -> not all interfaces\n", (int)addrlen, addr, addrlen, ipv4only ? "true":"false");
     rc = nn_literal_resolve (addr, addrlen, ipv4only, result, resultlen);
+	printf("nn_iface_resolve(addr:%*s, addrlen:%zd, ipv4only:%s) -> not all interfaces (result:rc= %d)\n", (int)addrlen, addr, addrlen, ipv4only ? "true":"false", rc);
     if (rc == -EINVAL)
         return -ENODEV;
     errnum_assert (rc == 0, -rc);
@@ -62,8 +67,10 @@ int nn_iface_resolve (const char *addr, size_t addrlen, int ipv4only,
 static void nn_iface_any (int ipv4only, struct sockaddr_storage *result,
     size_t *resultlen)
 {
+	printf("nn_iface_any(ipv4only:%s)\n", ipv4only ? "true":"false");
     if (ipv4only) {
         if (result) {
+		printf("nn_iface_any(ipv4only:%s,...): AF_INET (ipv4)\n", ipv4only ? "true": "false");
             result->ss_family = AF_INET;
             ((struct sockaddr_in*) result)->sin_addr.s_addr =
                 htonl (INADDR_ANY);
@@ -73,6 +80,7 @@ static void nn_iface_any (int ipv4only, struct sockaddr_storage *result,
     }
     else {
         if (result) {
+		printf("nn_iface_any(ipv4only:%s,...): AF_INET6 (ipv6)\n", ipv4only ? "true": "false");
             result->ss_family = AF_INET6;
             memcpy (&((struct sockaddr_in6*) result)->sin6_addr,
                 &in6addr_any, sizeof (in6addr_any));

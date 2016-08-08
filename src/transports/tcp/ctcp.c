@@ -586,11 +586,13 @@ static void nn_ctcp_start_connecting (struct nn_ctcp *self,
     /*  Combine the remote address and the port. */
     remote = *ss;
     remotelen = sslen;
-    if (remote.ss_family == AF_INET)
+    if (remote.ss_family == AF_INET) {
+	    printf("ctcp: AF_INET (ipv4)\n");
         ((struct sockaddr_in*) &remote)->sin_port = htons (port);
-    else if (remote.ss_family == AF_INET6)
+    } else if (remote.ss_family == AF_INET6) {
+	    printf("ctcp: AF_INET6 (ipv6)\n");
         ((struct sockaddr_in6*) &remote)->sin6_port = htons (port);
-    else
+    } else
         nn_assert (0);
 
     /*  Try to start the underlying socket. */
