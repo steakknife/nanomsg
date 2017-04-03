@@ -118,3 +118,6 @@ CMakeFiles
 /ws
 /ws_async_shutdown
 /zerocopy
+/.ninja_deps
+/.ninja_log
+/*.ninja

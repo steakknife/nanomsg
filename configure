@@ -111,6 +111,6 @@ then
 	warn "NOTE: Building in the source directory is not recommended."
 fi
 
-GENERATOR="Unix Makefiles"
+GENERATOR="${GENERATOR:-Ninja}"
 
 "$CMAKE" -G "$GENERATOR" "-DCMAKE_INSTALL_PREFIX=$PREFIX" $SRCDIR
